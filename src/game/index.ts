@@ -61,7 +61,16 @@ export class Game {
         this.canvas.addEventListener('click', (e) => {
             if (!this.assetsReady) return; // Don't allow clicks if assets (like UI) aren't ready
             if (this.gameState.isGameOver) {
-                this.restartGame();
+                // this.restartGame();
+                // Instead of restarting, go back to the landing page and refresh
+                const landingPage = document.getElementById('landing-page');
+                const gameContainer = document.getElementById('game-container');
+                if (landingPage && gameContainer) {
+                    gameContainer.classList.add('hidden');
+                    landingPage.classList.remove('hidden');
+                    document.body.style.overflow = 'auto'; // Restore scrolling for gallery
+                    window.location.reload(); // Refresh the page
+                }
                 return;
             }
             this.projectiles.push(this.player.shoot());

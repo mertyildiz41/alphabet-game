@@ -101,7 +101,7 @@ export class GameUI {
             // Changed from Final Score to Final Coins
             context.fillText(`Final Coins: ${gameState.coins}`, canvasWidth / 2, canvasHeight / 2);
             context.font = '20px Arial';
-            context.fillText('Click to Restart', canvasWidth / 2, canvasHeight / 2 + 60);
+            context.fillText('Click to Return to Gallery', canvasWidth / 2, canvasHeight / 2 + 60);
         }
     }
 }
