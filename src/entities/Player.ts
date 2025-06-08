@@ -25,9 +25,11 @@ export class Player implements GameObject {
         this.x = Math.max(this.width / 2, Math.min(mouseX, this.canvasWidth - this.width / 2));
     }
 
-    shoot(): Projectile {
+    shoot(speedMultiplier: number = 1): Projectile { // Accept a speed multiplier
+        const baseSpeed = 12;
+        const finalSpeed = baseSpeed * speedMultiplier;
         // Shoots straight up from the tip of the aimer
-        return new Projectile(this.x, this.aimerTipY, 6, 20, 'white', 12);
+        return new Projectile(this.x, this.aimerTipY, 6, 20, 'white', finalSpeed);
     }
 
     draw(context: CanvasRenderingContext2D) {

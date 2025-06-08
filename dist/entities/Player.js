@@ -14,9 +14,11 @@ export class Player {
     updateAimerPosition(mouseX) {
         this.x = Math.max(this.width / 2, Math.min(mouseX, this.canvasWidth - this.width / 2));
     }
-    shoot() {
+    shoot(speedMultiplier = 1) {
+        const baseSpeed = 12;
+        const finalSpeed = baseSpeed * speedMultiplier;
         // Shoots straight up from the tip of the aimer
-        return new Projectile(this.x, this.aimerTipY, 6, 20, 'white', 12);
+        return new Projectile(this.x, this.aimerTipY, 6, 20, 'white', finalSpeed);
     }
     draw(context) {
         // Draw the aimer (triangle part)
