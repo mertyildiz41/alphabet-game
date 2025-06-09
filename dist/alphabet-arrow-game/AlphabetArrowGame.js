@@ -21,8 +21,10 @@ export class AlphabetArrowGame {
             score: 0,
             lives: 3,
             isActive: false,
-            levelProgress: (this.currentLevelIndex + 1) / this.alphabet.length
+            levelProgress: (this.currentLevelIndex + 1) / this.alphabet.length,
+            isWin: false // Initialize isWin
         };
+        this.keydownHandler = () => { }; // Initialize with a no-op function
         this.init();
     }
     init() {
@@ -52,24 +54,27 @@ export class AlphabetArrowGame {
         // Replace previous click listener if any, or ensure this is the primary shoot trigger
         // this.canvas.addEventListener('click', () => { ... }); // Remove old click listener if it only called publicShoot without multiplier
         // Add keydown listener for restart or returning to gallery
-        document.addEventListener('keydown', (event) => {
+        // Store the handler so it can be removed later if necessary
+        this.keydownHandler = (event) => {
             if (!this.gameState.isActive) { // Only listen if game is over or won
                 if (event.key === 'r' || event.key === 'R') {
+                    this.removeKeydownListener(); // Clean up listener before restarting
                     this.startGame(); // Restart the game
                 }
                 else if (event.key === 'Escape') {
+                    this.removeKeydownListener(); // Clean up listener before navigating
                     // Logic to return to gallery
-                    // This might involve hiding the game canvas and showing the gallery UI
-                    // For now, let's just log it and you can implement the actual navigation
                     console.log('Returning to gallery...');
-                    // Example: window.location.reload(); // Simplest way to go back to initial state
-                    // Or, if you have a more sophisticated setup:
-                    // document.getElementById('game-canvas-container').style.display = 'none';
-                    // document.getElementById('game-selection-gallery').style.display = 'block';
                     window.location.reload(); // Reload the page to go back to the gallery
                 }
             }
-        });
+        };
+        document.addEventListener('keydown', this.keydownHandler);
+    }
+    removeKeydownListener() {
+        if (this.keydownHandler) {
+            document.removeEventListener('keydown', this.keydownHandler);
+        }
     }
     startGame() {
         this.gameState.isActive = true;
@@ -78,6 +83,7 @@ export class AlphabetArrowGame {
         this.gameState.score = 0;
         this.gameState.lives = 3;
         this.gameState.levelProgress = (this.currentLevelIndex + 1) / this.alphabet.length;
+        this.gameState.isWin = false; // Reset win state
         this.lettersOnScreen = [];
         this.arrows = [];
         this.spawnLetters();
@@ -221,11 +227,13 @@ export class AlphabetArrowGame {
     }
     gameOver() {
         this.gameState.isActive = false;
+        this.gameState.isWin = false; // Explicitly set isWin to false
         console.log("Game Over!");
         // The UI will now show the game over screen via the render method
     }
     winGame() {
         this.gameState.isActive = false;
+        this.gameState.isWin = true; // Set isWin to true
         console.log("Congratulations! You've completed all levels!");
         // The UI will now show the win screen via the render method
     }
@@ -246,7 +254,8 @@ export class AlphabetArrowGame {
             // For simplicity, let's keep it looping to show the final state via ui.render.
         }
         // Only request next frame if the game hasn't been explicitly stopped by navigating away
-        if (this.ui && typeof requestAnimationFrame === 'function') { // Check if UI is still relevant
+        // and the game is either active or in a state that needs continuous rendering (like game over/win screens)
+        if (this.ui && typeof requestAnimationFrame === 'function' && (this.gameState.isActive || this.gameState.lives <= 0 || this.gameState.isWin)) {
             requestAnimationFrame(() => this.gameLoop());
         }
     }

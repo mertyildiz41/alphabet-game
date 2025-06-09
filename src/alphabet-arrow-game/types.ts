@@ -13,4 +13,5 @@ export interface GameState {
     lives: number;
     isActive: boolean;
     levelProgress: number; // Added to store calculated progress
+    isWin?: boolean; // Added to explicitly track win state
 }

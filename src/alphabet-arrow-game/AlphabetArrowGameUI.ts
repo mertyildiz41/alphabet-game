@@ -49,10 +49,9 @@ export class AlphabetArrowGameUI {
         // Clear canvas
         this.context.clearRect(0, 0, this.canvasWidth, this.canvasHeight);
 
-        if (!gameState.isActive && gameState.lives <= 0) {
+        if (!gameState.isActive && gameState.lives <= 0 && !gameState.isWin) {
             this.showGameOver(gameState.score);
-        } else if (!gameState.isActive && gameState.currentLevelLetter === 'Z' && letters.length === 0) { // A simple win condition check, assuming Z is the last letter and it's cleared
-            // This win condition might need to be more robust, e.g. checking currentLevelIndex against alphabet.length
+        } else if (!gameState.isActive && gameState.isWin) { 
             this.showWinScreen(gameState.score);
         } else {
             // Draw background
