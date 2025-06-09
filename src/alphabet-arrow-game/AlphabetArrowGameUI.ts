@@ -49,20 +49,27 @@ export class AlphabetArrowGameUI {
         // Clear canvas
         this.context.clearRect(0, 0, this.canvasWidth, this.canvasHeight);
 
-        // Draw background
-        this.drawBackground();
+        if (!gameState.isActive && gameState.lives <= 0) {
+            this.showGameOver(gameState.score);
+        } else if (!gameState.isActive && gameState.currentLevelLetter === 'Z' && letters.length === 0) { // A simple win condition check, assuming Z is the last letter and it's cleared
+            // This win condition might need to be more robust, e.g. checking currentLevelIndex against alphabet.length
+            this.showWinScreen(gameState.score);
+        } else {
+            // Draw background
+            this.drawBackground();
 
-        // Draw player
-        this.drawPlayer(player);
+            // Draw player
+            this.drawPlayer(player);
 
-        // Draw letters
-        letters.forEach(letter => this.drawLetter(letter));
+            // Draw letters
+            letters.forEach(letter => this.drawLetter(letter));
 
-        // Draw arrows
-        arrows.forEach(arrow => this.drawArrow(arrow));
+            // Draw arrows
+            arrows.forEach(arrow => this.drawArrow(arrow));
 
-        // Draw UI elements
-        this.drawHUD(gameState);
+            // Draw UI elements
+            this.drawHUD(gameState);
+        }
     }
 
     private drawBackground() {
@@ -144,10 +151,11 @@ export class AlphabetArrowGameUI {
         this.context.fillStyle = 'white';
         this.context.font = '48px sans-serif';
         this.context.textAlign = 'center';
-        this.context.fillText('Game Over!', this.canvasWidth / 2, this.canvasHeight / 2 - 30);
+        this.context.fillText('Game Over!', this.canvasWidth / 2, this.canvasHeight / 2 - 70);
         this.context.font = '24px sans-serif';
-        this.context.fillText(`Final Score: ${score}`, this.canvasWidth / 2, this.canvasHeight / 2 + 20);
-        this.context.fillText('Press R to Restart', this.canvasWidth / 2, this.canvasHeight / 2 + 60);
+        this.context.fillText(`Final Score: ${score}`, this.canvasWidth / 2, this.canvasHeight / 2 - 20);
+        this.context.fillText('Press R to Restart', this.canvasWidth / 2, this.canvasHeight / 2 + 30);
+        this.context.fillText('Press Esc to Return to Gallery', this.canvasWidth / 2, this.canvasHeight / 2 + 70);
     }
 
     public showWinScreen(score: number) {
@@ -156,8 +164,9 @@ export class AlphabetArrowGameUI {
         this.context.fillStyle = 'white';
         this.context.font = '48px sans-serif';
         this.context.textAlign = 'center';
-        this.context.fillText('You Win!', this.canvasWidth / 2, this.canvasHeight / 2 - 30);
+        this.context.fillText('You Win!', this.canvasWidth / 2, this.canvasHeight / 2 - 70);
         this.context.font = '24px sans-serif';
-        this.context.fillText(`Final Score: ${score}`, this.canvasWidth / 2, this.canvasHeight / 2 + 20);
+        this.context.fillText(`Final Score: ${score}`, this.canvasWidth / 2, this.canvasHeight / 2 - 20);
+        this.context.fillText('Press Esc to Return to Gallery', this.canvasWidth / 2, this.canvasHeight / 2 + 30);
     }
 }

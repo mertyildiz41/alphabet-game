@@ -65,6 +65,25 @@ export class AlphabetArrowGame {
 
         // Replace previous click listener if any, or ensure this is the primary shoot trigger
         // this.canvas.addEventListener('click', () => { ... }); // Remove old click listener if it only called publicShoot without multiplier
+
+        // Add keydown listener for restart or returning to gallery
+        document.addEventListener('keydown', (event) => {
+            if (!this.gameState.isActive) { // Only listen if game is over or won
+                if (event.key === 'r' || event.key === 'R') {
+                    this.startGame(); // Restart the game
+                } else if (event.key === 'Escape') {
+                    // Logic to return to gallery
+                    // This might involve hiding the game canvas and showing the gallery UI
+                    // For now, let's just log it and you can implement the actual navigation
+                    console.log('Returning to gallery...');
+                    // Example: window.location.reload(); // Simplest way to go back to initial state
+                    // Or, if you have a more sophisticated setup:
+                    // document.getElementById('game-canvas-container').style.display = 'none';
+                    // document.getElementById('game-selection-gallery').style.display = 'block';
+                    window.location.reload(); // Reload the page to go back to the gallery
+                }
+            }
+        });
     }
 
     startGame() {
@@ -231,13 +250,13 @@ export class AlphabetArrowGame {
     private gameOver() {
         this.gameState.isActive = false;
         console.log("Game Over!");
-        // UI will be rendered in gameLoop to show this state
+        // The UI will now show the game over screen via the render method
     }
 
     private winGame() {
         this.gameState.isActive = false;
         console.log("Congratulations! You've completed all levels!");
-        // UI will be rendered in gameLoop to show this state
+        // The UI will now show the win screen via the render method
     }
 
     private gameLoop() {
@@ -260,14 +279,10 @@ export class AlphabetArrowGame {
              // For simplicity, let's keep it looping to show the final state via ui.render.
         }
 
-        // Only request next frame if game is not permanently over (e.g. won and no more levels)
-        // Or if it's active.
-        // This logic can be tricky. If game is over, we want to show the game over screen.
-        // If game is won, show win screen.
-        // If active, continue.
-        // The current render call outside `isActive` handles showing final states.
-        // We should continue the loop to keep rendering these states until user restarts (not implemented).
-        requestAnimationFrame(() => this.gameLoop());
+        // Only request next frame if the game hasn't been explicitly stopped by navigating away
+        if (this.ui && typeof requestAnimationFrame === 'function') { // Check if UI is still relevant
+             requestAnimationFrame(() => this.gameLoop());
+        }
     }
 
     // public publicShoot() { // This can be removed if direct click shooting is replaced by mousedown/mouseup
